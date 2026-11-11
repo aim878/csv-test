@@ -1,37 +1,33 @@
 <?php
+
 namespace App\Repositories;
+
+use Illuminate\Support\Collection;
+
 interface CsvRepositoryInterface
 {
     /**
-     * Get's a Transactions by it's ID
-     *
-     * @param int
+     * Get a transaction by its row index.
      */
-    public function get($id);
+    public function get(int $id): ?array;
+
     /**
-     * Get's all Transactions.
-     *
-     * @return mixed
+     * Get all transactions.
      */
-    public function all();
+    public function all(): Collection;
+
     /**
-     * Deletes a Transactions.
+     * The CSV column names.
      *
-     * @param int
+     * @return list<string>
      */
-    public function delete($id);
+    public function columns(): array;
+
     /**
-     * Updates a Transactions.
+     * Append a transaction and return the written row.
      *
-     * @param int
-     * @param array
+     * @param  array<string, mixed>  $data
+     * @return list<string>
      */
-    public function update($id, array $data);
-    /**
-     * Create a Transactions.
-     *
-     * @param int
-     * @param array
-     */
-    public function store($data);
+    public function store(array $data): array;
 }
