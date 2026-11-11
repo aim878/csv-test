@@ -1,68 +1,36 @@
 <?php
+
 namespace App\Repositories;
 
 use App\Services\CsvReader;
-use App\Repositories\CsvRepositoryInterface;
+use Illuminate\Support\Collection;
 
 class CsvRepository implements CsvRepositoryInterface
 {
-    /**
-     * @var Reader
-     */
-    protected $model;
-    public function __construct() {
-        $model = new CsvReader(public_path('file/transactions.csv'));
-        $this->model = $model;
-    }
-    /**
-     * Get's a Transactions by it's ID
-     *
-     * @param int
-     * @return array
-     */
-    public function get($id)
+    protected CsvReader $reader;
+
+    public function __construct(?string $file = null)
     {
-        $data = $this->model->toArray();
-        return data_get($data, $id, []);
+        $this->reader = CsvReader::make($file ?? public_path('file/transactions.csv'));
     }
-    /**
-     * Get's all Transactions.
-     *
-     * @return mixed
-     */
-    public function all()
+
+    public function get(int $id): ?array
     {
-        return $this->model->toArray(); 
+        return $this->reader->toArray()[$id] ?? null;
     }
-    /**
-     * Deletes a Transactions.
-     *
-     * @param int
-     */
-    public function delete($index)
+
+    public function all(): Collection
     {
-        $data = $this->model->toArray();
-        return array_splice($array, $index, 1);
-           
+        return $this->reader->all();
     }
-    /**
-     * Updates a Transactions.
-     *
-     * @param int
-     * @param array
-     */
-    public function update($id, array $data)
+
+    public function columns(): array
     {
+        return $this->reader->header();
     }
-    /**
-     * Store a Transactions.
-     *
-     * @param int
-     * @param array
-     */
-    public function store($data)
+
+    public function store(array $data): array
     {
-        $this->model->add($data);
+        return $this->reader->append($data);
     }
 }
-
